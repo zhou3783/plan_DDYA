@@ -23,8 +23,20 @@
       </div>
     </div>
     <div class="div-textare" v-show="readyShow">
-      <h1 class="hearder-h1">执法依据:</h1>
-      <p class="div-zhifayiju">{{remark}}</p>
+      <div class="div-text">
+        <h1 class="hearder-h1">执法依据:</h1>
+        <p class="div-zhifayiju">{{remark}}</p>
+      </div>
+      <div class="textare-bg-wrapper">
+        <img class="left-top" src="./assets/img/left-top.png" alt="">
+        <img class="left-bottom" src="./assets/img/left-bottom.png" alt="">
+        <img class="right-top" src="./assets/img/right-top.png" alt="">
+        <img class="right-bottom" src="./assets/img/right-bottom.png" alt="">
+        <div class="top-line"></div>
+        <div class="bottom-line"></div>
+        <div class="left-line"></div>
+        <div class="right-line"></div>
+      </div>
     </div>
   </div>
 </template>
@@ -46,16 +58,15 @@ export default {
   },
  
   created () {
-    // this.planId = callBackObj.getPlanId() //WPF方法传递案件ID
+    this.planId = callBackObj.getPlanId() //WPF方法传递案件ID
     // this.planId = '200101'
 
-    var typeId = 'a3cc5787-dca9-4b2d-8a60-104b385e6f5b'
+    // var typeId = 'a3cc5787-dca9-4b2d-8a60-104b385e6f5b'
     // var typeId = "af90ffb3-7b35-4c20-ae06-35857ed9c372"
-    this.initStep(typeId)
+    // this.initStep(typeId)
   },
   methods: {
     findPlanId(){
-      alert(this.planId)
       this.$axios({
         method: 'get',
         url: ajaxURLms
@@ -63,7 +74,6 @@ export default {
           + this.planId
       }).then((response) => {
         var typeId = response.data[0]
-        // alert(typeId)
         this.initStep(typeId)//通过接口找到预案ID
       })
     },
@@ -83,7 +93,6 @@ export default {
         this.maxSort = this.instructPlanSteps.length - 1
         this.remark = response.data.remark //执法依据
         this.readyShow = true //显示执法依据
-        // alert(this.instructPlanSteps)
       })
     },
     stepText (item){
@@ -135,20 +144,90 @@ body{
   width: 100%;
   height: 100%;
   .div-textare{
+    position: relative;
     margin: 4% 20% auto 20%;
     padding: 16px;
-    border: 4px solid  #00ffff;
     color: #ffffff;
     font-family: 'Microsoft YaHei';
-    .hearder-h1 {
-      line-height: 24px;
-      margin: 0;
-      font-size: 24px;
-      color: #ffffff;
+    .div-text {
+      padding: 26px 26px 0 60px;
+      .hearder-h1 {
+        line-height: 24px;
+        margin: 0;
+        font-size: 24px;
+        color: #ffffff;
+      }
+      .div-zhifayiju {
+        line-height: 30px;
+        font-size: 16px;
+      }
     }
-    .div-zhifayiju {
-      line-height: 30px;
-      font-size: 16px;
+    
+    .textare-bg-wrapper {
+      position: absolute;
+      top: 0;
+      width: 100%;
+      height: 100%;
+      // background: linear-gradient(to right,rgba(54, 110, 164, 0), rgba(54, 110, 164, 0.5), rgba(54, 110, 164, 0)); /* 标准的语法（必须放在最后） */
+      .left-top {
+        position: absolute;
+        left: 0;
+        top: 0;
+        width: 122px;
+        height: 122px;
+      }
+      .left-bottom {
+        position: absolute;
+        left: 0;
+        bottom: 0;
+        width: 122px;
+        height: 122px;
+      }
+      .right-top {
+        position: absolute;
+        right: 0;
+        width: 122px;
+        height: 122px;
+      }
+      .right-bottom {
+        position: absolute;
+        right: 0;
+        bottom: 0;
+        width: 122px;
+        height: 122px;
+      }
+      .top-line {
+        position: absolute;
+        display: block;
+        left: 118px;
+        top: 0;
+        width: calc(100% - 237px);
+        border-top: 2px solid rgba(0, 255, 255, 0.4);
+      }
+      .bottom-line {
+        position: absolute;
+        display: block;
+        left: 120px;
+        bottom: 0;
+        width: calc(100% - 241px);
+        border-top: 2px solid rgba(0, 255, 255, 0.4);
+      }
+      .left-line {
+        position: absolute;
+        display: block;
+        left: 21px;
+        top: 118px;
+        height: calc(100% - 238px);
+        border-left: 2px solid rgba(0, 255, 255, 0.4);
+      }
+      .right-line {
+        position: absolute;
+        display: block;
+        right: 30px;
+        top: 119px;
+        height: calc(100% - 240px);
+        border-left: 2px solid rgba(0, 255, 255, 0.4);
+      }
     }
   }
   .steps {
