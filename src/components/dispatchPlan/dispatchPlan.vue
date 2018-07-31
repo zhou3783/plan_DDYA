@@ -30,9 +30,10 @@ export default {
     }
   },
   created () {
-    // this.planId = callBackObj.getPlanId() //WPF方法传递案件ID
-    var typeId = "3863a5cf-2cbe-4a7c-a428-de45fa4ee0f133"
-    this.initStep(typeId)
+    //WPF URL alarmType取出planId
+    this.getURL ()
+    // var typeId = "3863a5cf-2cbe-4a7c-a428-de45fa4ee0f133"
+    // this.initStep(typeId)
 
     // this.planId = '900199'
     // this.findPlanId()
@@ -67,9 +68,16 @@ export default {
         })
         this.Steps = this.instructPlanSteps.length
         this.maxSort = this.instructPlanSteps.length - 1
-        // this.remark = response.data.remark //执法依据
-        // this.readyShow = true //显示执法依据
       })
+    },
+    getURL (){
+       this.planId = this.getQueryString('alarmType')
+       this.findPlanId()
+    },
+    getQueryString (name){
+        var reg = new RegExp("(^|&)"+ name +"=([^&]*)(&|$)");
+        var r = window.location.search.substr(1).match(reg);
+        if (r!=null) return r[2]; return '';
     }
   },
   watch: {
