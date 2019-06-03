@@ -112,12 +112,14 @@
           left: 12px;
           width: 20px;
           height: 38px;
+          text-align: center;
           .step-number {
-            width: 20px;
+            position: relative;
             margin: 0;
             line-height: 38px;
             font-size: 16px;
             color: #072540;
+            z-index: 2;
           }
 
           .step-circle {
@@ -133,7 +135,7 @@
             -moz-border-radius: 50px;
             -webkit-border-radius: 50px;
             border-radius: 50px;
-            z-index: -1;
+            z-index: 1;
           }
         }
         .body-background-image {
