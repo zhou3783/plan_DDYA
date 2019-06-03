@@ -9,7 +9,7 @@
         ></steps>
       </div>
     </div>
-    
+
   </div>
 </template>
 
@@ -22,7 +22,16 @@ export default {
   data() {
     return {
       planId: '',
-      instructPlanSteps: [],
+      instructPlanSteps: [
+        {
+          id: "901f806a-a00a-4dd1-bf6d-bd98fcfbed1367",
+          instructPlanStepFields: [],
+          isDefault: null,
+          detailedDescription: "预案编制中",
+          simpleDescription: "预案编制中",
+          stepOrder: 0
+        }
+      ],
       Steps: undefined,
       maxSort: undefined,
       remark: '',
@@ -32,57 +41,61 @@ export default {
   created () {
     //WPF URL alarmType取出planId
     this.getURL ()
-    // var typeId = "3863a5cf-2cbe-4a7c-a428-de45fa4ee0f133"
-    // this.initStep(typeId)
-
-    // this.planId = '900199'
-    // this.findPlanId()
   },
   methods: {
-   findPlanId(){
-      /**
-      *警情类型id去找预案id
-      *swagger 地址：http://172.17.99.30:10014/api/jp-BSPA-PolSituInfo-ms/swagger-ui.html#!/t45pa45alarm45type45controller/getDispatchFindPlanIdUsingGET
-      */
-      this.$axios({
-        method: 'get',
-        url: ajaxURLms
-          + 'api/jp-BSPA-PolSituInfo-ms/polsituinfo/dispatchFindPlanId/'
-          + this.planId
-      }).then((response) => {
-        var typeId = response.data[0]
-        this.initStep(typeId)//通过接口找到预案ID
-      })
-    },
+
     initStep (typeId) {
       this.$axios({
         method: 'get',
-        url: ajaxURLms 
-          + 'api/jp-BIO-Order-ms/instructions/plans/'
-              + typeId
+        url: baseURL
+          + '/api/jp-HCZZ-AdminWeb-app-ms/benchmark/info?pageIndex=1&pageSize=1&category=DDYA&natureDetails='
+          + typeId
       })
-      .then((response) => {
-        this.instructPlanSteps = response.data.instructPlanSteps
-        this.instructPlanSteps.sort(function (a, b){ //按照‘sort’属性排序
-          return a.sort - b.sort
+        .then(res => {
+          if(res.data.data.length <= 0){
+            return
+          }
+          this.instructPlanSteps = res.data.data[0].benchmarkStepModelList
+          this.instructPlanSteps.sort(function (a, b){ // 按照‘sort’属性排序
+            return a.stepOrder - b.stepOrder
+          })
+          this.Steps = this.instructPlanSteps.length
         })
-        this.Steps = this.instructPlanSteps.length
-        this.maxSort = this.instructPlanSteps.length - 1
-      })
+        .catch( err => {
+          if(isAlert){
+            alert('typeId')
+          }
+          this.instructPlanSteps = [
+            {
+              id: "901f806a-a00a-4dd1-bf6d-bd98fcfbed1367",
+              instructPlanStepFields: [],
+              isDefault: null,
+              planStepCode: "ddpcsjwz",
+              simpleDescription: "预案编制中",
+              detailedDescription: "预案编制中",
+              stepOrder:0
+            }
+          ];
+        })
     },
     getURL (){
-       this.planId = this.getQueryString('alarmType')
-       this.findPlanId()
+      this.planId = this.getQueryString('alarmType')
+      this.initStep(this.planId);
+      if(isAlert) {
+        alert('planId'+this.planId)
+        console.log(window.location.search)
+      }
     },
     getQueryString (name){
-        var reg = new RegExp("(^|&)"+ name +"=([^&]*)(&|$)");
-        var r = window.location.search.substr(1).match(reg);
-        if (r!=null) return r[2]; return '';
+      var href = window.location.href.split('?')[1];
+      var reg = new RegExp("(^|&)"+ name +"=([^&]*)(&|$)");
+      var r = href.match(reg);
+      if (r!=null) return r[2]; return '';
     }
   },
   watch: {
     planId (val, OldVal){
-      this.findPlanId()
+      this.initStep(this.planId)
     }
   },
   components: {

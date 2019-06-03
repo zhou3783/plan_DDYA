@@ -1,91 +1,88 @@
 <template>
   <div class="steps">
-    <div class="step" v-for="item in instructPlanSteps" 
-        :key="item.sort">
-          <div class="step-main">
-            <div @mouseleave="stepMouseleave($event)"
-                 @mouseenter='stepMouseenter($event)'>
-              <div class="left-background-image"></div>
-              <div class="step-number-wrapper">
-                <p class="step-number">{{item.sort + 1}}</p>
-                <div class="step-circle"></div>
-              </div>
-              <div class="body-background-image">
-                <p class="step-title">{{stepText(item)}}</p>
-              </div>
-              <div class="right-background-image" v-if="maxSort != item.sort"></div>
-              <div class="right-background-image-end" v-if="maxSort == item.sort"></div>
-              <div class="step-arrow-wrapper" v-if="maxSort != item.sort"></div>
-            </div>
-            
-            <div class="remark-swapper" 
-              v-html="item.remark">
-            </div>
+    <div class="step" v-for="(item,index) in instructPlanSteps"
+         :key="item.stepOrder">
+      <div class="step-main">
+        <div @mouseleave="stepMouseleave($event)"
+             @mouseenter='stepMouseenter($event)'>
+          <div class="left-background-image"></div>
+          <div class="step-number-wrapper">
+            <p class="step-number">{{index + 1}}</p>
+            <div class="step-circle"></div>
           </div>
+          <div class="body-background-image">
+            <p class="step-title">{{stepText(item)}}</p>
+          </div>
+          <div class="right-background-image" v-if="maxSort != index"></div>
+          <div class="right-background-image-end" v-if="maxSort == index"></div>
+          <div class="step-arrow-wrapper" v-if="maxSort != index"></div>
+        </div>
+        <div class="remark-swapper" v-html="item.detailedDescription"></div>
       </div>
+    </div>
   </div>
 </template>
 
 
 <script>
-export default {
-  name: 'stpes',
-  props: {
-    instructPlanSteps: Array,
-  },
-  computed: {
-    maxSort (){
-      return this.instructPlanSteps.length - 1;
-    }
-  },
-  methods: {
-        /**
-         *鼠标悬浮状态文字，指定长度换行
-        */
-    changeStrTT (str,len){
+  export default {
+    name: 'steps',
+    props: {
+      instructPlanSteps: Array,
+    },
+    computed: {
+      maxSort (){
+        return this.instructPlanSteps.length - 1;
+      }
+    },
+    methods: {
+      /**
+       *鼠标悬浮状态文字，指定长度换行
+       */
+      changeStrTT (str,len){
         if(str==null||str==""){
-            return "";
+          return "";
         }
         if(len==null){
-            len=10;
+          len=10;
         }
         var result="";
         var curlen=0;
         var patten= /.*[\u4e00-\u9fa5]+.*$/;
         for(var i=0;i<str.length;i++){
-            if(patten.test(str[i])){
-                curlen+=2;
-            }else{
-                curlen++;
-            }
-            if(curlen>=len){
-                curlen=0;
-                result+="<br/>";
+          if(patten.test(str[i])){
+            curlen+=2;
+          }else{
+            curlen++;
+          }
+          if(curlen>=len){
+            curlen=0;
+            result+="<br/>";
 
-            }
-            result+=str[i];
+          }
+          result+=str[i];
         }
         console.log(result)
         return result;
-    },
-    /**
-     *步骤条显示的文字
-     *如果文字前有数组和、要删除
-     */
-    stepText (item){
-      item.planStepDisplayname = item.planStepDisplayname.replace(/^\d、/,'');
-      item.planStepDisplayname = item.planStepDisplayname.replace(/[^\u4e00-\u9fa5]$/,'');
-      return item.planStepDisplayname
-    },
-    stepMouseleave (e){
-      e.srcElement.parentElement.lastElementChild.style.display = 'none';
-    },
-    stepMouseenter (e){
-      if (e.srcElement.parentElement.lastElementChild.innerHTML != '')
-      e.srcElement.parentElement.lastElementChild.style.display = 'block';
+      },
+      /**
+       *步骤条显示的文字
+       *如果文字前有数组和、要删除
+       */
+      stepText (item){
+        item.simpleDescription = item.simpleDescription.replace(/^\d、/,'');
+        item.simpleDescription = item.simpleDescription.replace(/[^\u4e00-\u9fa5]$/,'');
+        return item.simpleDescription
+      },
+      stepMouseleave (e){
+        e.srcElement.parentElement.lastElementChild.style.display = 'none';
+      },
+      stepMouseenter (e){
+        if (e.srcElement.parentElement.lastElementChild.innerHTML != '')
+          e.srcElement.parentElement.lastElementChild.style.display = 'block';
+      }
     }
   }
-}
 </script>
 
 <style lang="scss" scoped>
@@ -112,9 +109,11 @@ export default {
         .step-number-wrapper {
           position: absolute;
           top: 0;
-          left: 3%;
+          left: 12px;
+          width: 20px;
+          height: 38px;
           .step-number {
-            width: 16px;
+            width: 20px;
             margin: 0;
             line-height: 38px;
             font-size: 16px;
@@ -144,7 +143,7 @@ export default {
           background-image: url(./../../assets/img/step_body.png);
           text-align: center;
           .step-title {
-            margin-left: 24px;
+            margin-left: 26px;
             line-height: 38px;
             font-size: 16px;
             font-family: 'Microsoft YaHei';
@@ -162,7 +161,7 @@ export default {
           height: 38px;
           background: url(./../../assets/img/step_head.png) no-repeat;
         }
-        
+
         .right-background-image-end {
           display: inline-block;
           width: 34px;
